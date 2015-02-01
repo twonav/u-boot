@@ -26,7 +26,7 @@ binaries are needed to boot up.
 
 << X2/U3 >>
 It can be found in "boot.tar.gz" from here:
-http://dev.odroid.com/projects/4412boot/wiki/FrontPage?action=download&value=boot.tar.gz
+https://github.com/hardkernel/u-boot/tree/odroid-v2010.12/sd_fuse
 or here:
 http://odroid.in/guides/ubuntu-lfs/boot.tar.gz
 
