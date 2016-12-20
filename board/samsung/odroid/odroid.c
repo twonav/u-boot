@@ -225,8 +225,8 @@ static void board_clock_init(void)
 	while (readl(&clk->mux_stat_dmc) & MUX_STAT_DMC_CHANGING)
 		continue;
 
-	/* Set MPLL to 800MHz */
-	set = SDIV(0) | PDIV(3) | MDIV(100) | FSEL(0) | PLL_ENABLE(1);
+	/* Set MPLL to 400MHz */
+	set = SDIV(1) | PDIV(3) | MDIV(100) | FSEL(0) | PLL_ENABLE(1);
 
 	clrsetbits_le32(&clk->mpll_con0, clr_pll_con0, set);
 
