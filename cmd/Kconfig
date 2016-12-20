@@ -318,6 +318,11 @@ config CMD_MEMINFO
 	help
 	  Display memory information.
 
+config CMD_DEVMEM2
+	bool "devmem2"
+	help
+	  Uses devmem2 command.
+
 endmenu
 
 menu "Device access commands"

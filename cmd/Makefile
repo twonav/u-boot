@@ -160,6 +160,7 @@ obj-$(CONFIG_CMD_REGULATOR) += regulator.o
 endif # !CONFIG_SPL_BUILD
 
 obj-$(CONFIG_CMD_BLOB) += blob.o
+obj-$(CONFIG_CMD_DEVMEM2) += devmem2.o
 
 # core command
 obj-y += nvedit.o
