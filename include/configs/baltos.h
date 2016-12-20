@@ -48,14 +48,12 @@
 #define CONFIG_MTD_DEVICE
 #define CONFIG_RBTREE
 #define CONFIG_LZO
-#define CONFIG_CMD_UBI
 #define CONFIG_CMD_UBIFS
 
 /* I2C configuration */
 #undef CONFIG_SYS_OMAP24_I2C_SPEED
 #define CONFIG_SYS_OMAP24_I2C_SPEED 1000
 
-#undef CONFIG_SPL_OS_BOOT
 #ifdef CONFIG_NAND
 #define CONFIG_SYS_NAND_U_BOOT_OFFS	0x00080000
 #ifdef CONFIG_SPL_OS_BOOT
@@ -217,19 +215,13 @@
 
 /* SPL */
 #ifndef CONFIG_NOR_BOOT
-#define CONFIG_SPL_POWER_SUPPORT
-#define CONFIG_SPL_YMODEM_SUPPORT
-
 /* Bootcount using the RTC block */
 #define CONFIG_BOOTCOUNT_LIMIT
 #define CONFIG_BOOTCOUNT_AM33XX
 
 /* USB gadget RNDIS */
-/*#define CONFIG_SPL_MUSB_NEW_SUPPORT*/
 
 /* General network SPL, both CPSW and USB gadget RNDIS */
-/*#define CONFIG_SPL_NET_SUPPORT
-#define CONFIG_SPL_ENV_SUPPORT
 #define CONFIG_SPL_NET_VCI_STRING	"AM335x U-Boot SPL"*/
 
 #define CONFIG_SPL_LDSCRIPT		"$(CPUDIR)/am33xx/u-boot-spl.lds"
@@ -277,10 +269,6 @@
 #define CONFIG_AM335X_USB1
 #define CONFIG_AM335X_USB1_MODE MUSB_OTG
 
-#ifdef CONFIG_USB_MUSB_HOST
-#define CONFIG_USB_STORAGE
-#endif
-
 #ifdef CONFIG_USB_MUSB_GADGET
 #define CONFIG_USB_ETHER
 #define CONFIG_USB_ETH_RNDIS
@@ -295,7 +283,6 @@
 /*
  * Disable CPSW SPL support so we fit within the 101KiB limit.
  */
-#undef CONFIG_SPL_ETH_SUPPORT
 #endif
 
 /* Network. */

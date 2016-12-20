@@ -26,11 +26,6 @@
 #endif
 
 /*
- * Version number information
- */
-#define CONFIG_IDENT_STRING	"\nMarvell-gplugD"
-
-/*
  * High Level Configuration Options
  */
 #define CONFIG_SHEEVA_88SV331xV5	1	/* CPU Core subversion */
@@ -109,7 +104,6 @@
 #define CONFIG_USB_EHCI
 #define CONFIG_USB_EHCI_ARMADA100
 #define CONFIG_EHCI_IS_TDI
-#define CONFIG_USB_STORAGE
 #endif /* CONFIG_CMD_USB */
 
 #define CONFIG_DOS_PARTITION

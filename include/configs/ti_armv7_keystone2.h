@@ -15,7 +15,6 @@
 /* U-Boot Build Configuration */
 #define CONFIG_SKIP_LOWLEVEL_INIT	/* U-Boot is a 2nd stage loader */
 #define CONFIG_BOARD_EARLY_INIT_F
-#define CONFIG_DISPLAY_CPUINFO
 
 /* SoC Configuration */
 #define CONFIG_ARCH_CPU_INIT
@@ -54,8 +53,6 @@
 					CONFIG_SYS_SPL_MALLOC_SIZE + \
 					SPL_MALLOC_F_SIZE + \
 					CONFIG_SPL_STACK_SIZE - 4)
-#define CONFIG_SPL_SPI_FLASH_SUPPORT
-#define CONFIG_SPL_SPI_SUPPORT
 #define CONFIG_SPL_SPI_LOAD
 #define CONFIG_SYS_SPI_U_BOOT_OFFS	CONFIG_SPL_PAD_TO
 
@@ -70,14 +67,14 @@
 #define CONFIG_CONS_INDEX		1
 
 #ifndef CONFIG_SOC_K2G
-#define CONFIG_SYS_NS16550_CLK		clk_get_rate(KS2_CLK1_6)
+#define CONFIG_SYS_NS16550_CLK		ks_clk_get_rate(KS2_CLK1_6)
 #else
-#define CONFIG_SYS_NS16550_CLK		clk_get_rate(uart_pll_clk) / 2
+#define CONFIG_SYS_NS16550_CLK		ks_clk_get_rate(uart_pll_clk) / 2
 #endif
 
 /* SPI Configuration */
 #define CONFIG_DAVINCI_SPI
-#define CONFIG_SYS_SPI_CLK		clk_get_rate(KS2_CLK1_6)
+#define CONFIG_SYS_SPI_CLK		ks_clk_get_rate(KS2_CLK1_6)
 #define CONFIG_SF_DEFAULT_SPEED		30000000
 #define CONFIG_ENV_SPI_MAX_HZ		CONFIG_SF_DEFAULT_SPEED
 #define CONFIG_SYS_SPI0
@@ -197,10 +194,8 @@
 /* USB Configuration */
 #define CONFIG_USB_XHCI_KEYSTONE
 #define CONFIG_SYS_USB_XHCI_MAX_ROOT_PORTS	2
-#define CONFIG_USB_STORAGE
 #define CONFIG_EFI_PARTITION
 #define CONFIG_FS_FAT
-#define CONFIG_SYS_CACHELINE_SIZE		64
 #define CONFIG_USB_SS_BASE			KS2_USB_SS_BASE
 #define CONFIG_USB_HOST_XHCI_BASE		KS2_USB_HOST_XHCI_BASE
 #define CONFIG_DEV_USB_PHY_BASE			KS2_DEV_USB_PHY_BASE
@@ -208,7 +203,6 @@
 
 /* U-Boot command configuration */
 #define CONFIG_CMD_SAVES
-#define CONFIG_CMD_UBI
 #define CONFIG_CMD_UBIFS
 #define CONFIG_CMD_EEPROM
 
@@ -252,6 +246,7 @@
 	"addr_ubi=0x82000000\0"						\
 	"addr_secdb_key=0xc000000\0"					\
 	"name_kern=zImage\0"						\
+	"addr_mon=0x87000000\0"						\
 	"run_mon=mon_install ${addr_mon}\0"				\
 	"run_kern=bootz ${loadaddr} ${rd_spec} ${fdtaddr}\0"		\
 	"init_net=run args_all args_net\0"				\
@@ -296,8 +291,8 @@
 
 #ifndef CONFIG_BOOTCOMMAND
 #define CONFIG_BOOTCOMMAND						\
-	"run init_${boot} init_fw_rd_${boot} get_fdt_${boot} "		\
-		"get_mon_${boot} get_kern_${boot} run_mon run_kern"
+	"run init_${boot} get_mon_${boot} run_mon init_fw_rd_${boot} "	\
+	"get_fdt_${boot} get_kern_${boot} run_kern"
 #endif
 
 #define CONFIG_BOOTARGS							\
@@ -306,24 +301,18 @@
 #include <configs/ti_armv7_common.h>
 
 /* We wont be loading up OS from SPL for now.. */
-#undef CONFIG_SPL_OS_BOOT
 
 /* We do not have MMC support.. yet.. */
-#undef CONFIG_SPL_LIBDISK_SUPPORT
-#undef CONFIG_SPL_MMC_SUPPORT
-#undef CONFIG_SPL_FAT_SUPPORT
-#undef CONFIG_SPL_EXT_SUPPORT
 #undef CONFIG_MMC
 #undef CONFIG_GENERIC_MMC
 
 /* And no support for GPIO, yet.. */
-#undef CONFIG_SPL_GPIO_SUPPORT
 
 /* we may include files below only after all above definitions */
 #include <asm/arch/hardware.h>
 #include <asm/arch/clock.h>
 #ifndef CONFIG_SOC_K2G
-#define CONFIG_SYS_HZ_CLOCK		clk_get_rate(KS2_CLK1_6)
+#define CONFIG_SYS_HZ_CLOCK		ks_clk_get_rate(KS2_CLK1_6)
 #else
 #define CONFIG_SYS_HZ_CLOCK		external_clk[sys_clk]
 #endif

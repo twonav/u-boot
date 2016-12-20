@@ -41,11 +41,8 @@
 /* USB host support */
 #define CONFIG_USB_EHCI
 #define CONFIG_USB_EHCI_TEGRA
-#define CONFIG_USB_STORAGE
 
 /* PCI host support */
-#define CONFIG_PCI
-#define CONFIG_PCI_PNP
 #define CONFIG_CMD_PCI
 
 /* PCI networking support */
@@ -53,7 +50,7 @@
 
 /* General networking support */
 #define CONFIG_IP_DEFRAG
-#define CONFIG_TFTP_BLOCKSIZE		16384
+#define CONFIG_TFTP_BLOCKSIZE		16352
 #define CONFIG_TFTP_TSIZE
 
 /* Miscellaneous commands */

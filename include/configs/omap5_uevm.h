@@ -88,21 +88,13 @@
 #define CONFIG_SYS_I2C_TCA642X_ADDR 0x22
 
 /* USB UHH support options */
-#define CONFIG_USB_HOST
 #define CONFIG_USB_EHCI
 #define CONFIG_USB_EHCI_OMAP
-#define CONFIG_USB_STORAGE
 #define CONFIG_SYS_USB_EHCI_MAX_ROOT_PORTS 3
 #define CONFIG_EHCI_HCD_INIT_AFTER_RESET
 
 #define CONFIG_OMAP_EHCI_PHY2_RESET_GPIO 80
 #define CONFIG_OMAP_EHCI_PHY3_RESET_GPIO 79
-
-/* USB Device Firmware Update support */
-#define CONFIG_USB_FUNCTION_DFU
-#define CONFIG_DFU_RAM
-
-#define CONFIG_DFU_MMC
 
 /* Enabled commands */
 

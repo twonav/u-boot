@@ -120,8 +120,8 @@ endif
 ifdef CONFIG_ARM64
 OBJCOPYFLAGS += -j .text -j .rodata -j .data -j .u_boot_list -j .rela.dyn
 else
-OBJCOPYFLAGS += -j .text -j .secure_text -j .rodata -j .hash -j .data -j \
-	.got -j .got.plt -j .u_boot_list -j .rel.dyn
+OBJCOPYFLAGS += -j .text -j .secure_text -j .secure_data -j .rodata -j .hash \
+		-j .data -j .got -j .got.plt -j .u_boot_list -j .rel.dyn
 endif
 
 ifdef CONFIG_OF_EMBED
@@ -143,5 +143,8 @@ ALL-y += u-boot-dtb.imx
 else
 ALL-y += u-boot.imx
 endif
+endif
+ifneq ($(CONFIG_VF610),)
+ALL-y += u-boot.vyb
 endif
 endif

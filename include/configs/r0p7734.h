@@ -24,7 +24,6 @@
 #define CONFIG_BAUDRATE		115200
 #define CONFIG_BOOTARGS		"console=ttySC3,115200"
 
-#define CONFIG_VERSION_VARIABLE
 #undef  CONFIG_SHOW_BOOT_PROGRESS
 
 /* Ether */
@@ -77,9 +76,6 @@
 #define CONFIG_CONS_SCIF3	1
 
 /* Suppress display of console information at boot */
-#undef  CONFIG_SYS_CONSOLE_INFO_QUIET
-#undef  CONFIG_SYS_CONSOLE_OVERWRITE_ROUTINE
-#undef  CONFIG_SYS_CONSOLE_ENV_OVERWRITE
 
 /* SDRAM */
 #define CONFIG_SYS_SDRAM_BASE	(0x88000000)

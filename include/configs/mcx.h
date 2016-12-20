@@ -25,8 +25,6 @@
 #define CONFIG_MACH_TYPE	MACH_TYPE_MCX
 #define CONFIG_BOARD_LATE_INIT
 
-#define CONFIG_SYS_CACHELINE_SIZE	64
-
 #define CONFIG_EMIF4	/* The chip has EMIF4 controller */
 
 #include <asm/arch/cpu.h>		/* get chip and board defs */
@@ -37,12 +35,6 @@
  * and older u-boot.bin with the new U-Boot SPL.
  */
 #define CONFIG_SYS_TEXT_BASE		0x80008000
-
-/*
- * Display CPU and Board information
- */
-#define CONFIG_DISPLAY_CPUINFO
-#define CONFIG_DISPLAY_BOARDINFO
 
 /* Clock Defines */
 #define V_OSCK			26000000	/* Clock output from T2 */
@@ -96,7 +88,6 @@
 #define CONFIG_DOS_PARTITION
 
 /* EHCI */
-#define CONFIG_USB_STORAGE
 #define CONFIG_OMAP3_GPIO_2
 #define CONFIG_OMAP3_GPIO_5
 #define CONFIG_USB_EHCI
@@ -112,7 +103,6 @@
 
 #define CONFIG_CMD_DATE
 #define CONFIG_CMD_NAND		/* NAND support			*/
-#define CONFIG_CMD_UBI
 #define CONFIG_CMD_UBIFS
 #define CONFIG_RBTREE
 #define CONFIG_LZO
@@ -323,15 +313,6 @@
 #define CONFIG_SPL_BOARD_INIT
 #define CONFIG_SPL_NAND_SIMPLE
 
-#define CONFIG_SPL_LIBCOMMON_SUPPORT
-#define CONFIG_SPL_LIBDISK_SUPPORT
-#define CONFIG_SPL_I2C_SUPPORT
-#define CONFIG_SPL_MMC_SUPPORT
-#define CONFIG_SPL_FAT_SUPPORT
-#define CONFIG_SPL_LIBGENERIC_SUPPORT
-#define CONFIG_SPL_SERIAL_SUPPORT
-#define CONFIG_SPL_POWER_SUPPORT
-#define CONFIG_SPL_NAND_SUPPORT
 #define CONFIG_SPL_NAND_BASE
 #define CONFIG_SPL_NAND_DRIVERS
 #define CONFIG_SPL_NAND_ECC
@@ -384,13 +365,9 @@
 #define CONFIG_NET_RETRY_COUNT 10
 #endif
 
-#define CONFIG_VIDEO
-#define CONFIG_CFB_CONSOLE
-#define CONFIG_VGA_AS_SINGLE_DEVICE
 #define CONFIG_SPLASH_SCREEN
 #define CONFIG_VIDEO_BMP_RLE8
 #define CONFIG_CMD_BMP
 #define CONFIG_VIDEO_OMAP3
-#define CONFIG_SYS_CONSOLE_IS_IN_ENV
 
 #endif /* __CONFIG_H */

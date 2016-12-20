@@ -3,6 +3,7 @@
 
 #include <common.h>
 #include <linux/compiler.h>
+#include <asm/barriers.h>
 
 #ifdef CONFIG_ARM64
 
@@ -33,11 +34,6 @@ enum dcache_option {
 	DCACHE_WRITEBACK = 4 << 2,
 	DCACHE_WRITEALLOC = 4 << 2,
 };
-
-#define isb()				\
-	({asm volatile(			\
-	"isb" : : : "memory");		\
-	})
 
 #define wfi()				\
 	({asm volatile(			\
@@ -111,15 +107,6 @@ void smp_kick_all_cpus(void);
 void flush_l3_cache(void);
 
 /*
- *Issue a hypervisor call in accordance with ARM "SMC Calling convention",
- * DEN0028A
- *
- * @args: input and output arguments
- *
- */
-void hvc_call(struct pt_regs *args);
-
-/*
  *Issue a secure monitor call in accordance with ARM "SMC Calling convention",
  * DEN0028A
  *
@@ -128,7 +115,8 @@ void hvc_call(struct pt_regs *args);
  */
 void smc_call(struct pt_regs *args);
 
-void __noreturn psci_system_reset(bool smc);
+void __noreturn psci_system_reset(void);
+void __noreturn psci_system_off(void);
 
 #endif	/* __ASSEMBLY__ */
 
@@ -227,7 +215,9 @@ void __noreturn psci_system_reset(bool smc);
  */
 void save_boot_params_ret(void);
 
-#define isb() __asm__ __volatile__ ("" : : : "memory")
+#ifdef CONFIG_ARMV7_LPAE
+void switch_to_hypervisor_ret(void);
+#endif
 
 #define nop() __asm__ __volatile__("mov\tr0,r0\t@ nop\n\t");
 

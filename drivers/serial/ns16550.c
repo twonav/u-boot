@@ -5,6 +5,7 @@
  */
 
 #include <common.h>
+#include <clk.h>
 #include <dm.h>
 #include <errno.h>
 #include <fdtdec.h>
@@ -347,11 +348,13 @@ int ns16550_serial_probe(struct udevice *dev)
 	return 0;
 }
 
-#if CONFIG_IS_ENABLED(OF_CONTROL)
+#if CONFIG_IS_ENABLED(OF_CONTROL) && !CONFIG_IS_ENABLED(OF_PLATDATA)
 int ns16550_serial_ofdata_to_platdata(struct udevice *dev)
 {
 	struct ns16550_platdata *plat = dev->platdata;
 	fdt_addr_t addr;
+	struct clk clk;
+	int err;
 
 	/* try Processor Local Bus device first */
 	addr = dev_get_addr(dev);
@@ -397,9 +400,21 @@ int ns16550_serial_ofdata_to_platdata(struct udevice *dev)
 				     "reg-offset", 0);
 	plat->reg_shift = fdtdec_get_int(gd->fdt_blob, dev->of_offset,
 					 "reg-shift", 0);
-	plat->clock = fdtdec_get_int(gd->fdt_blob, dev->of_offset,
-				     "clock-frequency",
-				     CONFIG_SYS_NS16550_CLK);
+
+	err = clk_get_by_index(dev, 0, &clk);
+	if (!err) {
+		err = clk_get_rate(&clk);
+		if (!IS_ERR_VALUE(err))
+			plat->clock = err;
+	} else if (err != -ENOENT && err != -ENODEV && err != -ENOSYS) {
+		debug("ns16550 failed to get clock\n");
+		return err;
+	}
+
+	if (!plat->clock)
+		plat->clock = fdtdec_get_int(gd->fdt_blob, dev->of_offset,
+					     "clock-frequency",
+					     CONFIG_SYS_NS16550_CLK);
 	if (!plat->clock) {
 		debug("ns16550 clock not defined\n");
 		return -EINVAL;
@@ -416,6 +431,7 @@ const struct dm_serial_ops ns16550_serial_ops = {
 	.setbrg = ns16550_serial_setbrg,
 };
 
+#if !CONFIG_IS_ENABLED(OF_PLATDATA)
 #if CONFIG_IS_ENABLED(OF_CONTROL)
 /*
  * Please consider existing compatible strings before adding a new
@@ -452,4 +468,5 @@ U_BOOT_DRIVER(ns16550_serial) = {
 	.flags	= DM_FLAG_PRE_RELOC,
 };
 #endif
+#endif /* !OF_PLATDATA */
 #endif /* CONFIG_DM_SERIAL */

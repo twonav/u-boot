@@ -12,7 +12,6 @@
 #include <spi.h>
 #include <dm/device-internal.h>
 #include <dm/uclass-internal.h>
-#include <dm/root.h>
 #include <dm/lists.h>
 #include <dm/util.h>
 
@@ -109,12 +108,6 @@ int spi_xfer(struct spi_slave *slave, unsigned int bitlen,
 	return dm_spi_xfer(slave->dev, bitlen, dout, din, flags);
 }
 
-static int spi_post_bind(struct udevice *dev)
-{
-	/* Scan the bus for devices */
-	return dm_scan_fdt_node(dev, gd->fdt_blob, dev->of_offset, false);
-}
-
 static int spi_child_post_bind(struct udevice *dev)
 {
 	struct dm_spi_slave_platdata *plat = dev_get_parent_platdata(dev);
@@ -171,7 +164,6 @@ static int spi_child_pre_probe(struct udevice *dev)
 
 	slave->max_hz = plat->max_hz;
 	slave->mode = plat->mode;
-	slave->mode_rx = plat->mode_rx;
 	slave->wordlen = SPI_DEFAULT_WORDLEN;
 
 	return 0;
@@ -388,7 +380,7 @@ void spi_free_slave(struct spi_slave *slave)
 int spi_slave_ofdata_to_platdata(const void *blob, int node,
 				 struct dm_spi_slave_platdata *plat)
 {
-	int mode = 0, mode_rx = 0;
+	int mode = 0;
 	int value;
 
 	plat->cs = fdtdec_get_int(blob, node, "reg", -1);
@@ -420,24 +412,22 @@ int spi_slave_ofdata_to_platdata(const void *blob, int node,
 		break;
 	}
 
-	plat->mode = mode;
-
 	value = fdtdec_get_uint(blob, node, "spi-rx-bus-width", 1);
 	switch (value) {
 	case 1:
 		break;
 	case 2:
-		mode_rx |= SPI_RX_DUAL;
+		mode |= SPI_RX_DUAL;
 		break;
 	case 4:
-		mode_rx |= SPI_RX_QUAD;
+		mode |= SPI_RX_QUAD;
 		break;
 	default:
 		error("spi-rx-bus-width %d not supported\n", value);
 		break;
 	}
 
-	plat->mode_rx = mode_rx;
+	plat->mode = mode;
 
 	return 0;
 }
@@ -446,7 +436,7 @@ UCLASS_DRIVER(spi) = {
 	.id		= UCLASS_SPI,
 	.name		= "spi",
 	.flags		= DM_UC_FLAG_SEQ_ALIAS,
-	.post_bind	= spi_post_bind,
+	.post_bind	= dm_scan_fdt_dev,
 	.post_probe	= spi_post_probe,
 	.child_pre_probe = spi_child_pre_probe,
 	.per_device_auto_alloc_size = sizeof(struct dm_spi_bus),

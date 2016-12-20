@@ -18,7 +18,6 @@
  /* High Level Configuration Options */
 #define CONFIG_MX35
 
-#define CONFIG_DISPLAY_CPUINFO
 #define CONFIG_SYS_FSL_CLK
 
 /* Set TEXT at the beginning of the NOR flash */
@@ -87,7 +86,6 @@
 #define CONFIG_NET_RETRY_COUNT	100
 #define CONFIG_CMD_DATE
 
-#define CONFIG_USB_STORAGE
 #define CONFIG_DOS_PARTITION
 #define CONFIG_EFI_PARTITION
 

@@ -14,6 +14,7 @@
 #include <asm/arch/clock.h>
 #include <asm/arch/sys_proto.h>
 #include <asm/omap_common.h>
+#include <asm/omap_sec_common.h>
 #include <asm/utils.h>
 #include <linux/compiler.h>
 
@@ -37,7 +38,8 @@ void set_lpmode_selfrefresh(u32 base)
 void force_emif_self_refresh()
 {
 	set_lpmode_selfrefresh(EMIF1_BASE);
-	set_lpmode_selfrefresh(EMIF2_BASE);
+	if (!is_dra72x())
+		set_lpmode_selfrefresh(EMIF2_BASE);
 }
 
 inline u32 emif_num(u32 base)
@@ -1475,6 +1477,20 @@ void sdram_init(void)
 		} else
 			debug("get_ram_size() successful");
 	}
+
+#if defined(CONFIG_TI_SECURE_DEVICE)
+	/*
+	 * On HS devices, do static EMIF firewall configuration
+	 * but only do it if not already running in SDRAM
+	 */
+	if (!in_sdram)
+		if (0 != secure_emif_reserve())
+			hang();
+
+	/* On HS devices, ensure static EMIF firewall APIs are locked */
+	if (0 != secure_emif_firewall_lock())
+		hang();
+#endif
 
 	if (sdram_type == EMIF_SDRAM_TYPE_DDR3 &&
 	    (!in_sdram && !warm_reset()) && (!is_dra7xx())) {

@@ -8,12 +8,15 @@
 
 #include <common.h>
 #include <command.h>
+#include <dm/device.h>
 #include <efi_loader.h>
 #include <errno.h>
 #include <libfdt.h>
 #include <libfdt_env.h>
 #include <memalign.h>
 #include <asm/global_data.h>
+#include <asm-generic/sections.h>
+#include <linux/linkage.h>
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -51,7 +54,7 @@ static struct efi_device_path_file_path bootefi_device_path[] = {
 	}
 };
 
-static efi_status_t bootefi_open_dp(void *handle, efi_guid_t *protocol,
+static efi_status_t EFIAPI bootefi_open_dp(void *handle, efi_guid_t *protocol,
 			void **protocol_interface, void *agent_handle,
 			void *controller_handle, uint32_t attributes)
 {
@@ -144,7 +147,8 @@ static void *copy_fdt(void *fdt)
  */
 static unsigned long do_bootefi_exec(void *efi, void *fdt)
 {
-	ulong (*entry)(void *image_handle, struct efi_system_table *st);
+	ulong (*entry)(void *image_handle, struct efi_system_table *st)
+		asmlinkage;
 	ulong fdt_pages, fdt_size, fdt_start, fdt_end;
 	bootm_headers_t img = { 0 };
 
@@ -203,7 +207,16 @@ static unsigned long do_bootefi_exec(void *efi, void *fdt)
 
 	if (!memcmp(bootefi_device_path[0].str, "N\0e\0t", 6))
 		loaded_image_info.device_handle = nethandle;
+	else
+		loaded_image_info.device_handle = bootefi_device_path;
 #endif
+#ifdef CONFIG_GENERATE_SMBIOS_TABLE
+	efi_smbios_register();
+#endif
+
+	/* Initialize EFI runtime services */
+	efi_reset_system_init();
+	efi_get_time_init();
 
 	/* Call our payload! */
 	debug("%s:%d Jumping to 0x%lx\n", __func__, __LINE__, (long)entry);
@@ -225,7 +238,7 @@ static int do_bootefi(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 	int r = 0;
 
 	if (argc < 2)
-		return 1;
+		return CMD_RET_USAGE;
 	saddr = argv[1];
 
 	addr = simple_strtoul(saddr, NULL, 16);
@@ -265,18 +278,30 @@ void efi_set_bootdev(const char *dev, const char *devnr, const char *path)
 	char devname[32] = { 0 }; /* dp->str is u16[32] long */
 	char *colon;
 
-	/* Assemble the condensed device name we use in efi_disk.c */
-	snprintf(devname, sizeof(devname), "%s%s", dev, devnr);
+#if defined(CONFIG_BLK) || defined(CONFIG_ISO_PARTITION)
+	desc = blk_get_dev(dev, simple_strtol(devnr, NULL, 10));
+#endif
+
+#ifdef CONFIG_BLK
+	if (desc) {
+		snprintf(devname, sizeof(devname), "%s", desc->bdev->name);
+	} else
+#endif
+
+	{
+		/* Assemble the condensed device name we use in efi_disk.c */
+		snprintf(devname, sizeof(devname), "%s%s", dev, devnr);
+	}
+
 	colon = strchr(devname, ':');
 
 #ifdef CONFIG_ISO_PARTITION
 	/* For ISOs we create partition block devices */
-	desc = blk_get_dev(dev, simple_strtol(devnr, NULL, 10));
 	if (desc && (desc->type != DEV_TYPE_UNKNOWN) &&
 	    (desc->part_type == PART_TYPE_ISO)) {
 		if (!colon)
-			snprintf(devname, sizeof(devname), "%s%s:1", dev,
-				 devnr);
+			snprintf(devname, sizeof(devname), "%s:1", devname);
+
 		colon = NULL;
 	}
 #endif
@@ -290,6 +315,11 @@ void efi_set_bootdev(const char *dev, const char *devnr, const char *path)
 
 	/* Patch bootefi_image_path to the target file path */
 	memset(bootefi_image_path[0].str, 0, sizeof(bootefi_image_path[0].str));
-	snprintf(devname, sizeof(devname), "%s", path);
+	if (strcmp(dev, "Net")) {
+		/* Add leading / to fs paths, because they're absolute */
+		snprintf(devname, sizeof(devname), "/%s", path);
+	} else {
+		snprintf(devname, sizeof(devname), "%s", path);
+	}
 	ascii2unicode(bootefi_image_path[0].str, devname);
 }

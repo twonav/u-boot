@@ -58,8 +58,6 @@
 #define V_OSCK				24000000  /* Clock output from T2 */
 #define V_SCLK				(V_OSCK)
 
-#define CONFIG_VERSION_VARIABLE
-
 #define CONFIG_ENV_IS_IN_MMC		1
 
 /*
@@ -281,14 +279,10 @@
 #define CONFIG_POWER_TPS65217
 
 /* SPL */
-#define CONFIG_SPL_POWER_SUPPORT
-#define CONFIG_SPL_YMODEM_SUPPORT
 
 #define CONFIG_SPL_LDSCRIPT		"$(CPUDIR)/am33xx/u-boot-spl.lds"
 
 #ifndef CONFIG_SPL_USBETH_SUPPORT
-/* To support eMMC booting */
-#define CONFIG_STORAGE_EMMC
 #define CONFIG_FASTBOOT_FLASH_MMC_DEV   1
 #endif
 
@@ -328,11 +322,6 @@
 
 #if defined CONFIG_SHC_NETBOOT
 #ifdef CONFIG_SPL_BUILD
-#define CONFIG_SPL_NET_SUPPORT
-#define CONFIG_SPL_ETH_SUPPORT
-#define CONFIG_SPL_NET_VCI_STRING	"AM335x U-Boot SPL"
-#define CONFIG_SPL_ENV_SUPPORT
-#define CONFIG_SPL_MMC_SUPPORT
 #define CONFIG_ENV_IS_NOWHERE
 #undef CONFIG_ENV_IS_IN_MMC
 #endif

@@ -50,15 +50,12 @@
 /* USB Host support */
 #define CONFIG_USB_EHCI
 #define CONFIG_USB_EHCI_TEGRA
-#define CONFIG_USB_STORAGE
 
 /* USB networking support */
 #define CONFIG_USB_HOST_ETHER
 #define CONFIG_USB_ETHER_ASIX
 
 /* PCI host support */
-#define CONFIG_PCI
-#define CONFIG_PCI_PNP
 #define CONFIG_CMD_PCI
 
 /* General networking support */

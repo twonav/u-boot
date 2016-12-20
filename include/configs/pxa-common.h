@@ -9,7 +9,6 @@
 #ifndef	__CONFIG_PXA_COMMON_H__
 #define	__CONFIG_PXA_COMMON_H__
 
-#define	CONFIG_DISPLAY_CPUINFO
 #define	CONFIG_SYS_ARM_CACHE_WRITETHROUGH
 
 /*
@@ -43,7 +42,6 @@
 #endif
 #define	CONFIG_SYS_USB_OHCI_REGS_BASE		0x4c000000
 #define	CONFIG_SYS_USB_OHCI_SLOT_NAME		"pxa-ohci"
-#define	CONFIG_USB_STORAGE
 #endif
 
 #endif	/* __CONFIG_PXA_COMMON_H__ */

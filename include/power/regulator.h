@@ -54,7 +54,7 @@
  * which does the scan on the device node, for the 'regulator-name' constraint.
  * If the parent is not a PMIC device, and the child is not bind by function:
  * 'pmic_bind_childs()', then it's recommended to bind the device by call to
- * dm_scan_fdt_node() - this is usually done automatically for bus devices,
+ * dm_scan_fdt_dev() - this is usually done automatically for bus devices,
  * as a post bind method.
  *
  * Regulator get:
@@ -108,6 +108,7 @@ enum regulator_type {
 	REGULATOR_TYPE_BUCK,
 	REGULATOR_TYPE_DVS,
 	REGULATOR_TYPE_FIXED,
+	REGULATOR_TYPE_GPIO,
 	REGULATOR_TYPE_OTHER,
 };
 
@@ -152,6 +153,8 @@ enum regulator_flag {
  * TODO(sjg@chromium.org): Consider putting the above two into @flags
  * @flags:     - flags value (see REGULATOR_FLAG_...)
  * @name**     - fdt regulator name - should be taken from the device tree
+ * ctrl_reg:   - Control register offset used to enable/disable regulator
+ * volt_reg:   - register offset for writing voltage vsel values
  *
  * Note:
  * *  - set automatically on device probe by the uclass's '.pre_probe' method.
@@ -171,6 +174,8 @@ struct dm_regulator_uclass_platdata {
 	bool boot_on;
 	const char *name;
 	int flags;
+	u8 ctrl_reg;
+	u8 volt_reg;
 };
 
 /* Regulator device operations */

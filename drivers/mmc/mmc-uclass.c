@@ -111,18 +111,12 @@ struct mmc *find_mmc_device(int dev_num)
 
 int get_mmc_num(void)
 {
-	return max(blk_find_max_devnum(IF_TYPE_MMC), 0);
+	return max((blk_find_max_devnum(IF_TYPE_MMC) + 1), 0);
 }
 
 int mmc_get_next_devnum(void)
 {
-	int ret;
-
-	ret = get_mmc_num();
-	if (ret < 0)
-		return ret;
-
-	return ret + 1;
+	return blk_find_max_devnum(IF_TYPE_MMC);
 }
 
 struct blk_desc *mmc_get_blk_desc(struct mmc *mmc)
@@ -169,7 +163,7 @@ void print_mmc_devices(char separator)
 
 	for (uclass_first_device(UCLASS_MMC, &dev);
 	     dev;
-	     uclass_next_device(&dev)) {
+	     uclass_next_device(&dev), first = false) {
 		struct mmc *m = mmc_get_mmc_dev(dev);
 
 		if (!first) {
@@ -243,7 +237,6 @@ static int mmc_select_hwpart(struct udevice *bdev, int hwpart)
 	struct udevice *mmc_dev = dev_get_parent(bdev);
 	struct mmc *mmc = mmc_get_mmc_dev(mmc_dev);
 	struct blk_desc *desc = dev_get_uclass_platdata(bdev);
-	int ret;
 
 	if (desc->hwpart == hwpart)
 		return 0;
@@ -251,17 +244,14 @@ static int mmc_select_hwpart(struct udevice *bdev, int hwpart)
 	if (mmc->part_config == MMCPART_NOAVAILABLE)
 		return -EMEDIUMTYPE;
 
-	ret = mmc_switch_part(mmc, hwpart);
-	if (ret)
-		return ret;
-
-	return 0;
+	return mmc_switch_part(mmc, hwpart);
 }
 
 static const struct blk_ops mmc_blk_ops = {
 	.read	= mmc_bread,
 #ifndef CONFIG_SPL_BUILD
 	.write	= mmc_bwrite,
+	.erase	= mmc_berase,
 #endif
 	.select_hwpart	= mmc_select_hwpart,
 };

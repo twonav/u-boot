@@ -97,6 +97,7 @@
 #define  SDHCI_DIV_MASK	0xFF
 #define  SDHCI_DIV_MASK_LEN	8
 #define  SDHCI_DIV_HI_MASK	0x300
+#define  SDHCI_PROG_CLOCK_MODE  0x0020
 #define  SDHCI_CLOCK_CARD_EN	0x0004
 #define  SDHCI_CLOCK_INT_STABLE	0x0002
 #define  SDHCI_CLOCK_INT_EN	0x0001
@@ -166,6 +167,8 @@
 #define  SDHCI_CAN_64BIT	0x10000000
 
 #define SDHCI_CAPABILITIES_1	0x44
+#define  SDHCI_CLOCK_MUL_MASK	0x00FF0000
+#define  SDHCI_CLOCK_MUL_SHIFT	16
 
 #define SDHCI_MAX_CURRENT	0x48
 
@@ -240,6 +243,7 @@ struct sdhci_host {
 	unsigned int quirks;
 	unsigned int host_caps;
 	unsigned int version;
+	unsigned int clk_mul;   /* Clock Multiplier value */
 	unsigned int clock;
 	struct mmc *mmc;
 	const struct sdhci_ops *ops;
@@ -367,19 +371,12 @@ static inline u8 sdhci_readb(struct sdhci_host *host, int reg)
  * See msm_sdhci.c for an example.
  *
  * @cfg:	Configuration structure to fill in (generally &plat->mmc)
- * @name:	Device name (normally dev->name)
- * @buswidth:	Bus width (in bits, such as 4 or 8)
- * @caps:	Host capabilities (MMC_MODE_...)
+ * @host:	SDHCI host structure
  * @max_clk:	Maximum supported clock speed in HZ (0 for default)
  * @min_clk:	Minimum supported clock speed in HZ (0 for default)
- * @version:	Host controller version (generally read from the
- *		SDHCI_HOST_VERSION register)
- * @quirks:	Quick flags (SDHCI_QUIRK_...)
- * @host_caps:	Additional host capabilities (0 if none)
  */
-int sdhci_setup_cfg(struct mmc_config *cfg, const char *name, int buswidth,
-		    uint caps, u32 max_clk, u32 min_clk, uint version,
-		    uint quirks, uint host_caps);
+int sdhci_setup_cfg(struct mmc_config *cfg, struct sdhci_host *host,
+		    u32 max_clk, u32 min_clk);
 
 /**
  * sdhci_bind() - Set up a new MMC block device

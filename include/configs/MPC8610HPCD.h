@@ -11,8 +11,6 @@
 #ifndef __CONFIG_H
 #define __CONFIG_H
 
-#define CONFIG_DISPLAY_BOARDINFO
-
 /* High Level Configuration Options */
 #define CONFIG_MPC8610		1	/* MPC8610 specific */
 #define CONFIG_MPC8610HPCD	1	/* MPC8610HPCD board specific */
@@ -25,11 +23,7 @@
 
 #ifdef CONFIG_FSL_DIU_FB
 #define CONFIG_SYS_DIU_ADDR	(CONFIG_SYS_CCSRBAR + 0x2c000)
-#define CONFIG_VIDEO
 #define CONFIG_CMD_BMP
-#define CONFIG_CFB_CONSOLE
-#define CONFIG_VIDEO_SW_CURSOR
-#define CONFIG_VGA_AS_SINGLE_DEVICE
 #define CONFIG_VIDEO_LOGO
 #define CONFIG_VIDEO_BMP_LOGO
 #endif
@@ -44,7 +38,6 @@
  */
 #define CONFIG_SYS_SCRATCH_VA	0xc0000000
 
-#define CONFIG_PCI		1	/* Enable PCI/PCIE*/
 #define CONFIG_PCI1		1	/* PCI controller 1 */
 #define CONFIG_PCIE1		1	/* PCIe 1 connected to ULI bridge */
 #define CONFIG_PCIE2		1	/* PCIe 2 connected to slot */
@@ -277,7 +270,6 @@
 
 #define CONFIG_PCI_SCAN_SHOW		/* show pci devices on startup */
 
-#define CONFIG_PCI_PNP		/* do pci plug-and-play */
 #define CONFIG_CMD_REGINFO
 
 #define CONFIG_ULI526X
@@ -289,8 +281,6 @@
  ************************************************************/
 #define CONFIG_PCI_OHCI		1
 #define CONFIG_USB_OHCI_NEW		1
-#define CONFIG_USB_KEYBOARD	1
-#define CONFIG_SYS_STDIO_DEREGISTER
 #define CONFIG_SYS_USB_EVENT_POLL	1
 #define CONFIG_SYS_USB_OHCI_SLOT_NAME	"ohci_pci"
 #define CONFIG_SYS_USB_OHCI_MAX_ROOT_PORTS 15
@@ -477,7 +467,8 @@
  * have to be in the first 8 MB of memory, since this is
  * the maximum mapped by the Linux kernel during initialization.
  */
-#define CONFIG_SYS_BOOTMAPSZ	(8 << 20)	/* Initial Memory map for Linux*/
+#define CONFIG_SYS_BOOTMAPSZ	(256 << 20)	/* Initial Memory map for Linux*/
+#define CONFIG_SYS_BOOTM_LEN	(256 << 20)	/* Increase max gunzip size */
 
 #if defined(CONFIG_CMD_KGDB)
 #define CONFIG_KGDB_BAUDRATE	230400	/* speed to run kgdb serial port */
@@ -498,7 +489,7 @@
 #define CONFIG_NETMASK		255.255.255.0
 
 /* default location for tftp and bootm */
-#define CONFIG_LOADADDR		1000000
+#define CONFIG_LOADADDR		0x10000000
 
 #undef	CONFIG_BOOTARGS		/* the boot command will set bootargs */
 
@@ -566,9 +557,9 @@
 	"cmp.b $loadaddr " __stringify(CONFIG_SYS_TEXT_BASE)	\
 		" $filesize\0"	\
 "consoledev=ttyS0\0"						\
-"ramdiskaddr=2000000\0"					\
+"ramdiskaddr=0x18000000\0"					\
 "ramdiskfile=8610hpcd/ramdisk.uboot\0"				\
-"fdtaddr=c00000\0"						\
+"fdtaddr=0x17c00000\0"						\
 "fdtfile=8610hpcd/mpc8610_hpcd.dtb\0"				\
 "bdev=sda3\0"					\
 "en-wd=mw.b f8100010 0x08; echo -expect:- 08; md.b f8100010 1\0" \
@@ -604,9 +595,9 @@
 	"netdev=eth0\0"						\
 	"uboot=" __stringify(CONFIG_UBOOTPATH) "\0"		\
 	"consoledev=ttyS0\0"					\
-	"ramdiskaddr=2000000\0"					\
+	"ramdiskaddr=0x18000000\0"				\
 	"ramdiskfile=8610hpcd/ramdisk.uboot\0"			\
-	"fdtaddr=c00000\0"					\
+	"fdtaddr=0x17c00000\0"					\
 	"fdtfile=8610hpcd/mpc8610_hpcd.dtb\0"			\
 	"bdev=sda3\0"
 #endif

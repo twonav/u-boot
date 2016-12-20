@@ -10,8 +10,6 @@
 #ifndef __CONFIG_H
 #define __CONFIG_H
 
-#define CONFIG_DISPLAY_BOARDINFO
-
 #ifndef CONFIG_SYS_TEXT_BASE
 #define CONFIG_SYS_TEXT_BASE	0xeff40000
 #endif
@@ -31,7 +29,6 @@
 #define CONFIG_MP		/* support multiple processors */
 
 #define CONFIG_FSL_ELBC		/* Has Enhanced localbus controller */
-#define CONFIG_PCI		/* Enable PCI/PCIE */
 #define CONFIG_PCI_INDIRECT_BRIDGE     /* indirect PCI bridge support */
 #define CONFIG_PCIE1		/* PCIE controller 1 (slot 1) */
 #define CONFIG_PCIE2		/* PCIE controller 2 (slot 2) */
@@ -232,7 +229,6 @@ extern unsigned long get_clock_freq(void);
 #define CONFIG_SYS_PCIE1_IO_SIZE	0x00010000	/* 64k */
 
 #if defined(CONFIG_PCI)
-#define CONFIG_PCI_PNP		/* do pci plug-and-play */
 #define CONFIG_PCI_SCAN_SHOW	/* show pci devices on startup */
 #endif	/* CONFIG_PCI */
 
@@ -269,7 +265,6 @@ extern unsigned long get_clock_freq(void);
 #ifdef CONFIG_USB_EHCI
 #define CONFIG_EHCI_HCD_INIT_AFTER_RESET
 #define CONFIG_USB_EHCI_FSL
-#define CONFIG_USB_STORAGE
 #define CONFIG_DOS_PARTITION
 #endif
 #endif
@@ -375,7 +370,7 @@ extern unsigned long get_clock_freq(void);
 	"consoledev=ttyS0\0"					\
 	"ramdiskaddr=2000000\0"					\
 	"ramdiskfile=rootfs.ext2.gz.uboot\0"			\
-	"fdtaddr=c00000\0"					\
+	"fdtaddr=1e00000\0"					\
 	"fdtfile=p1023rdb.dtb\0"				\
 	"othbootargs=ramdisk_size=600000\0"			\
 	"bdev=sda1\0"						\

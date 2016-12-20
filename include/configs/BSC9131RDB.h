@@ -11,8 +11,6 @@
 #ifndef __CONFIG_H
 #define __CONFIG_H
 
-#define CONFIG_DISPLAY_BOARDINFO
-
 #ifdef CONFIG_BSC9131RDB
 #define CONFIG_BSC9131
 #define CONFIG_NAND_FSL_IFC
@@ -28,8 +26,6 @@
 
 #ifdef CONFIG_NAND
 #define CONFIG_SPL_INIT_MINIMAL
-#define CONFIG_SPL_SERIAL_SUPPORT
-#define CONFIG_SPL_NAND_SUPPORT
 #define CONFIG_SPL_NAND_BOOT
 #define CONFIG_SPL_FLUSH_IMAGE
 #define CONFIG_SPL_TARGET		"u-boot-with-spl.bin"
@@ -233,8 +229,6 @@ extern unsigned long get_sdram_size(void);
 #define CONFIG_NS16550_MIN_FUNCTIONS
 #endif
 
-#define CONFIG_SYS_CONSOLE_IS_IN_ENV	/* determine from environment */
-
 #define CONFIG_SYS_BAUDRATE_TABLE	\
 	{300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200}
 
@@ -359,7 +353,6 @@ extern unsigned long get_sdram_size(void);
 #ifdef CONFIG_USB_EHCI
 #define CONFIG_EHCI_HCD_INIT_AFTER_RESET
 #define CONFIG_USB_EHCI_FSL
-#define CONFIG_USB_STORAGE
 #define CONFIG_HAS_FSL_DR_USB
 #endif
 
@@ -372,13 +365,6 @@ extern unsigned long get_sdram_size(void);
 #define MTDIDS_DEFAULT "nand0=ff800000.flash,"
 #define MTDPARTS_DEFAULT "mtdparts=ff800000.flash:1m(uboot)," \
 			"8m(kernel),512k(dtb),-(fs)"
-/*
- * Override partitions in device tree using info
- * in "mtdparts" environment variable
- */
-#ifdef CONFIG_CMD_MTDPARTS
-#define CONFIG_FDT_FIXUP_PARTITIONS
-#endif
 
 /*
  * Environment Configuration
@@ -403,7 +389,7 @@ extern unsigned long get_sdram_size(void);
 	"consoledev=ttyS0\0"				\
 	"ramdiskaddr=2000000\0"			\
 	"ramdiskfile=rootfs.ext2.gz.uboot\0"		\
-	"fdtaddr=c00000\0"				\
+	"fdtaddr=1e00000\0"				\
 	"fdtfile=bsc9131rdb.dtb\0"		\
 	"bdev=sda1\0"	\
 	"hwconfig=usb1:dr_mode=host,phy_type=ulpi\0"	\

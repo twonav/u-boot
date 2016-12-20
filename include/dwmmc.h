@@ -105,7 +105,7 @@
 
 /* Status Register */
 #define DWMCI_BUSY		(1 << 9)
-#define DWMCI_FIFO_MASK		0x1ff
+#define DWMCI_FIFO_MASK		0x1fff
 #define DWMCI_FIFO_SHIFT	17
 
 /* FIFOTH Register */
@@ -253,14 +253,12 @@ static inline u8 dwmci_readb(struct dwmci_host *host, int reg)
  * See rockchip_dw_mmc.c for an example.
  *
  * @cfg:	Configuration structure to fill in (generally &plat->mmc)
- * @name:	Device name (normally dev->name)
- * @buswidth:	Bus width (in bits, such as 4 or 8)
- * @caps:	Host capabilities (MMC_MODE_...)
- * @max_clk:	Maximum supported clock speed in HZ (e.g. 400000)
- * @min_clk:	Minimum supported clock speed in HZ (e.g. 150000000)
+ * @host:	DWMMC host
+ * @max_clk:	Maximum supported clock speed in HZ (e.g. 150000000)
+ * @min_clk:	Minimum supported clock speed in HZ (e.g. 400000)
  */
-void dwmci_setup_cfg(struct mmc_config *cfg, const char *name, int buswidth,
-		     uint caps, u32 max_clk, u32 min_clk);
+void dwmci_setup_cfg(struct mmc_config *cfg, struct dwmci_host *host,
+		u32 max_clk, u32 min_clk);
 
 /**
  * dwmci_bind() - Set up a new MMC block device
@@ -286,8 +284,8 @@ int dwmci_bind(struct udevice *dev, struct mmc *mmc, struct mmc_config *cfg);
  * This is used when you are not using CONFIG_BLK. Convert your driver over!
  *
  * @host:	DWMMC host structure
- * @max_clk:	Maximum supported clock speed in HZ (e.g. 400000)
- * @min_clk:	Minimum supported clock speed in HZ (e.g. 150000000)
+ * @max_clk:	Maximum supported clock speed in HZ (e.g. 150000000)
+ * @min_clk:	Minimum supported clock speed in HZ (e.g. 400000)
  * @return 0 if OK, -ve on error
  */
 int add_dwmci(struct dwmci_host *host, u32 max_clk, u32 min_clk);
@@ -295,9 +293,6 @@ int add_dwmci(struct dwmci_host *host, u32 max_clk, u32 min_clk);
 
 #ifdef CONFIG_DM_MMC_OPS
 /* Export the operations to drivers */
-int dwmci_send_cmd(struct udevice *dev, struct mmc_cmd *cmd,
-		   struct mmc_data *data);
-int dwmci_set_ios(struct udevice *dev);
 int dwmci_probe(struct udevice *dev);
 extern const struct dm_mmc_ops dm_dwmci_ops;
 #endif

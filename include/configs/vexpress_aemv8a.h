@@ -19,11 +19,6 @@
 
 #define CONFIG_SUPPORT_RAW_INITRD
 
-/* MMU Definitions */
-#define CONFIG_SYS_CACHELINE_SIZE	64
-
-#define CONFIG_IDENT_STRING		" vexpress_aemv8a"
-
 /* Link Definitions */
 #if defined(CONFIG_TARGET_VEXPRESS64_BASE_FVP) || \
 	defined(CONFIG_TARGET_VEXPRESS64_BASE_FVP_DRAM)
@@ -133,7 +128,6 @@
 /* Command line configuration */
 #define CONFIG_MENU
 /*#define CONFIG_MENU_SHOW*/
-#define CONFIG_CMD_BOOTI
 #define CONFIG_CMD_UNZIP
 #define CONFIG_CMD_PXE
 #define CONFIG_CMD_ENV

@@ -44,6 +44,8 @@ struct cpu_type {
 #define SVR_LS1012A		0x870400
 #define SVR_LS1043A		0x879200
 #define SVR_LS1023A		0x879208
+#define SVR_LS1046A		0x870700
+#define SVR_LS1026A		0x870708
 #define SVR_LS2045A		0x870120
 #define SVR_LS2080A		0x870110
 #define SVR_LS2085A		0x870100
@@ -58,9 +60,8 @@ struct cpu_type {
 
 /* ahci port register default value */
 #define AHCI_PORT_PHY_1_CFG    0xa003fffe
-#define AHCI_PORT_PHY_2_CFG    0x28184d1f
-#define AHCI_PORT_PHY_3_CFG    0x0e081509
 #define AHCI_PORT_TRANS_CFG    0x08000029
+#define AHCI_PORT_AXICC_CFG	0x3fffffff
 
 /* AHCI (sata) register map */
 struct ccsr_ahci {
@@ -96,6 +97,10 @@ void fsl_lsch2_early_init_f(void);
 void cpu_name(char *name);
 #ifdef CONFIG_SYS_FSL_ERRATUM_A009635
 void erratum_a009635(void);
+#endif
+
+#ifdef CONFIG_SYS_FSL_ERRATUM_A010315
+void erratum_a010315(void);
 #endif
 
 bool soc_has_dp_ddr(void);

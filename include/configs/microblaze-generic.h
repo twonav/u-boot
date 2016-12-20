@@ -175,13 +175,8 @@
 #define CONFIG_CMD_IRQ
 #define CONFIG_CMD_MFSL
 
-#if defined(CONFIG_DCACHE) || defined(CONFIG_ICACHE)
-#else
-#endif
-
 #if defined(FLASH)
 # define CONFIG_CMD_JFFS2
-# define CONFIG_CMD_UBI
 # undef CONFIG_CMD_UBIFS
 
 # if !defined(RAMENV)
@@ -196,7 +191,6 @@
 # endif
 #else
 # undef CONFIG_CMD_JFFS2
-# undef CONFIG_CMD_UBI
 # undef CONFIG_CMD_UBIFS
 #endif
 #endif
@@ -206,7 +200,6 @@
 #endif
 
 #if defined(CONFIG_CMD_UBIFS)
-# define CONFIG_CMD_UBI
 # define CONFIG_LZO
 #endif
 
@@ -263,8 +256,6 @@
 
 #define CONFIG_CMDLINE_EDITING
 
-#define CONFIG_SYS_CONSOLE_IS_IN_ENV
-
 /* Enable flat device tree support */
 #define CONFIG_LMB		1
 
@@ -289,26 +280,20 @@
 /* SPL part */
 #define CONFIG_CMD_SPL
 #define CONFIG_SPL_FRAMEWORK
-#define CONFIG_SPL_LIBCOMMON_SUPPORT
-#define CONFIG_SPL_LIBGENERIC_SUPPORT
-#define CONFIG_SPL_SERIAL_SUPPORT
 #define CONFIG_SPL_BOARD_INIT
 
 #define CONFIG_SPL_LDSCRIPT	"arch/microblaze/cpu/u-boot-spl.lds"
 
 #define CONFIG_SPL_RAM_DEVICE
 #ifdef CONFIG_SYS_FLASH_BASE
-# define CONFIG_SPL_NOR_SUPPORT
 # define CONFIG_SYS_UBOOT_BASE		CONFIG_SYS_FLASH_BASE
 #endif
 
 /* for booting directly linux */
-#define CONFIG_SPL_OS_BOOT
 
-#define CONFIG_SYS_OS_BASE		(CONFIG_SYS_FLASH_BASE + \
-					 0x60000)
 #define CONFIG_SYS_FDT_BASE		(CONFIG_SYS_FLASH_BASE + \
 					 0x40000)
+#define CONFIG_SYS_FDT_SIZE		(16<<10)
 #define CONFIG_SYS_SPL_ARGS_ADDR	(CONFIG_SYS_TEXT_BASE + \
 					 0x1000000)
 

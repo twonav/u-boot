@@ -27,7 +27,7 @@
 
 #include <common.h>
 #include <asm/io.h>
-#include <asm/errno.h>
+#include <linux/errno.h>
 #include <wait_bit.h>
 #include <spi.h>
 #include "cadence_qspi.h"
@@ -293,8 +293,11 @@ void cadence_qspi_apb_config_baudrate_div(void *reg_base,
 	debug("%s: ref_clk %dHz sclk %dHz Div 0x%x\n", __func__,
 	      ref_clk_hz, sclk_hz, div);
 
-	div = (div & CQSPI_REG_CONFIG_BAUD_MASK) << CQSPI_REG_CONFIG_BAUD_LSB;
-	reg |= div;
+	/* ensure the baud rate doesn't exceed the max value */
+	if (div > CQSPI_REG_CONFIG_BAUD_MASK)
+		div = CQSPI_REG_CONFIG_BAUD_MASK;
+
+	reg |= (div << CQSPI_REG_CONFIG_BAUD_LSB);
 	writel(reg, reg_base + CQSPI_REG_CONFIG);
 
 	cadence_qspi_apb_controller_enable(reg_base);

@@ -12,8 +12,6 @@
 #ifndef __CONFIG_H
 #define __CONFIG_H
 
-#define CONFIG_SYS_CACHELINE_SIZE	32
-
 #include <asm/arch/imx-regs.h>
 
 #define CONFIG_VF610
@@ -23,8 +21,6 @@
 #define CONFIG_SYS_FSL_CLK
 
 #define CONFIG_ARCH_MISC_INIT
-#define CONFIG_DISPLAY_CPUINFO
-#define CONFIG_DISPLAY_BOARDINFO
 
 #define CONFIG_SKIP_LOWLEVEL_INIT
 
@@ -41,7 +37,6 @@
 /* Allow to overwrite serial and ethaddr */
 #define CONFIG_ENV_OVERWRITE
 #define CONFIG_ENV_VARS_UBOOT_RUNTIME_CONFIG
-#define CONFIG_VERSION_VARIABLE
 #define CONFIG_BAUDRATE			115200
 
 /* NAND support */
@@ -73,8 +68,6 @@
 
 #define CONFIG_RBTREE
 #define CONFIG_LZO
-#define CONFIG_CMD_UBI
-#define CONFIG_MTD_UBI_FASTMAP
 #define CONFIG_CMD_UBIFS	/* increases size by almost 60 KB */
 
 #define CONFIG_FEC_MXC
@@ -207,8 +200,6 @@
 
 #define CONFIG_SYS_NO_FLASH
 
-#define CONFIG_SYS_CACHELINE_SIZE 32
-
 /* USB Host Support */
 #define CONFIG_USB_EHCI
 #define CONFIG_USB_EHCI_VF
@@ -223,13 +214,9 @@
 #define CONFIG_TRDX_PID_COLIBRI_VF50IT   0x0019
 
 /* USB DFU */
-#define CONFIG_USB_FUNCTION_DFU
-#define CONFIG_DFU_NAND
-#define CONFIG_DFU_MMC
 #define CONFIG_SYS_DFU_DATA_BUF_SIZE (1024 * 1024)
 
 /* USB Storage */
-#define CONFIG_USB_STORAGE
 #define CONFIG_USB_FUNCTION_MASS_STORAGE
 
 #endif /* __CONFIG_H */
