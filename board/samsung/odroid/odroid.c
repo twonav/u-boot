@@ -98,6 +98,7 @@ static void odroid_low_power(void)
 	struct exynos4_power *pwr =
 	    (struct exynos4_power *)samsung_get_base_power();
 
+
 	/* Turn off unnecessary power domains */
 	writel(0x0, &pwr->xxti_configuration);	/* XXTI */
 	writel(0x0, &pwr->cam_configuration);	/* CAM */
@@ -316,8 +317,8 @@ static void board_clock_init(void)
 	 *
 	 * SCLK_UARTx = MOUTuartX / (ratio + 1) = 100 (7)
 	*/
-	set = UART0_RATIO(7) | UART1_RATIO(7) | UART2_RATIO(7) |
-	      UART3_RATIO(7) | UART4_RATIO(7);
+	set = UART0_RATIO(3) | UART1_RATIO(3) | UART2_RATIO(3) |
+	      UART3_RATIO(3) | UART4_RATIO(3);
 
 	clrsetbits_le32(&clk->div_peril0, clr, set);
 
