@@ -120,6 +120,9 @@ static void odroid_low_power(void)
 static void board_clock_init(void)
 {
 	unsigned int set, clr, clr_src_cpu, clr_pll_con0, clr_src_dmc;
+
+	struct exynos4_clock *clk4 = (struct exynos4_clock *)
+						samsung_get_base_clock();
 	struct exynos4x12_clock *clk = (struct exynos4x12_clock *)
 						samsung_get_base_clock();
 
@@ -313,9 +316,9 @@ static void board_clock_init(void)
 	clr = UART0_RATIO(15) | UART1_RATIO(15) | UART2_RATIO(15) |
 	      UART3_RATIO(15) | UART4_RATIO(15);
 	/*
-	 * For MOUTuart0-4: 800MHz
+	 * For MOUTuart0-4: 800MHz ¿?
 	 *
-	 * SCLK_UARTx = MOUTuartX / (ratio + 1) = 100 (7)
+	 * SCLK_UARTx = MOUTuartX / (ratio + 1) = 100 (3)
 	*/
 	set = UART0_RATIO(3) | UART1_RATIO(3) | UART2_RATIO(3) |
 	      UART3_RATIO(3) | UART4_RATIO(3);
@@ -380,6 +383,11 @@ static void board_clock_init(void)
 	/* Wait for divider ready status */
 	while (readl(&clk->div_stat_fsys3) & DIV_STAT_FSYS3_CHANGING)
 		continue;
+
+	/* Change FIMD0 divisor to 0*/	
+	clr = 0xffffff;
+	set = 0xfffff0;
+	clrsetbits_le32(&clk4->div_lcd0, clr, set);
 
 	return;
 }
