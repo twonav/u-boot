@@ -230,7 +230,7 @@ static void board_clock_init(void)
 		continue;
 
 	/* Set MPLL to 400MHz */
-	set = SDIV(1) | PDIV(3) | MDIV(100) | FSEL(0) | PLL_ENABLE(1);
+	set = SDIV(2) | PDIV(3) | MDIV(100) | FSEL(0) | PLL_ENABLE(1);
 
 	clrsetbits_le32(&clk->mpll_con0, clr_pll_con0, set);
 
@@ -318,10 +318,10 @@ static void board_clock_init(void)
 	/*
 	 * For MOUTuart0-4: 800MHz ¿?
 	 *
-	 * SCLK_UARTx = MOUTuartX / (ratio + 1) = 100 (3)
+	 * SCLK_UARTx = MOUTuartX / (ratio + 1) = 100 (1)
 	*/
-	set = UART0_RATIO(3) | UART1_RATIO(3) | UART2_RATIO(3) |
-	      UART3_RATIO(3) | UART4_RATIO(3);
+	set = UART0_RATIO(1) | UART1_RATIO(1) | UART2_RATIO(1) |
+	      UART3_RATIO(1) | UART4_RATIO(1);
 
 	clrsetbits_le32(&clk->div_peril0, clr, set);
 
