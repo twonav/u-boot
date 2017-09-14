@@ -173,10 +173,31 @@ static void regulator_show(struct udevice *dev, int ret)
 
 	printf("%s@%s: ", dev->name, uc_pdata->name);
 	if (uc_pdata->flags & REGULATOR_FLAG_AUTOSET_UV)
+	{
 		printf("set %d uV", uc_pdata->min_uV);
+	}
 	if (uc_pdata->flags & REGULATOR_FLAG_AUTOSET_UA)
+	{
 		printf("; set %d uA", uc_pdata->min_uA);
-	printf("; enabling");
+	}
+	printf("; always_on: ");
+	if (uc_pdata->always_on)
+	{
+		printf("enabling");
+	}
+	else
+	{
+		printf("disabling");
+	}
+	printf("; boot_on: ");
+	if (uc_pdata->boot_on)
+	{
+		printf("enabling");
+	}
+	else
+	{
+		printf("disabling");
+	}
 	if (ret)
 		printf(" (ret: %d)", ret);
 	printf("\n");

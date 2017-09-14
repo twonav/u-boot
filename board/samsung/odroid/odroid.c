@@ -459,6 +459,7 @@ int exynos_power_init(void)
 		"VDDQ_EMMC_1.8V",
 		"VDDQ_EMMC_2.8V",
 		"TFLASH_2.8V",
+		"VDDQ_MMC2_2.8V",
 		NULL,
 	};
 

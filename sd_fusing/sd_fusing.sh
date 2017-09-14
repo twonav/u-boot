@@ -10,13 +10,7 @@
 
 if [ -z $1 ]
 then
-    echo "usage: ./sd_fusing.sh <SD Reader's device file> <uboot_version>"
-    exit 0
-fi
-
-if [ -z $2 ]
-then
-    echo "usage: ./sd_fusing.sh <SD Reader's device file> <uboot_version[2012,2016]>"
+    echo "usage: ./sd_fusing.sh <SD Reader's device file>"
     exit 0
 fi
 
@@ -56,19 +50,19 @@ fi
 
 #<BL1 fusing>
 echo "BL1 fusing"
-sudo dd iflag=dsync oflag=dsync if=bl1.bin of=$device seek=$signed_bl1_position
+sudo dd iflag=dsync oflag=dsync if=./bl1.bin of=$device seek=$signed_bl1_position
 
 #<BL2 fusing>
 echo "BL2 fusing"
-sudo dd iflag=dsync oflag=dsync if=bl2.bin of=$device seek=$bl2_position
+sudo dd iflag=dsync oflag=dsync if=./bl2.bin of=$device seek=$bl2_position
 
 #<u-boot fusing>
 echo "u-boot fusing"
-sudo dd iflag=dsync oflag=dsync if=u-boot_$2.bin of=$device seek=$uboot_position
+sudo dd iflag=dsync oflag=dsync if=./u-boot.bin of=$device seek=$uboot_position
 
 #<TrustZone S/W fusing>
 echo "TrustZone S/W fusing"
-sudo dd iflag=dsync oflag=dsync if=tzsw.bin of=$device seek=$tzsw_position
+sudo dd iflag=dsync oflag=dsync if=./tzsw.bin of=$device seek=$tzsw_position
 
 ####################################
 #<Message Display>
