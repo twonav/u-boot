@@ -162,6 +162,13 @@
 					regulator-boot-on;
 				};
 
+				ldo23_reg: LDO23 {
+					regulator-name = "AUDIO.3V";
+					regulator-min-microvolt = <3000000>;
+					regulator-max-microvolt = <3000000>;
+					regulator-boot-on;
+				};
+
 				ldo25_reg: LDO25 {
 					regulator-compatible = "LDO25";
 					regulator-name = "VDDQ_LCD_3.0V";

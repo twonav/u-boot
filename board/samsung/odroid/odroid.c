@@ -389,6 +389,10 @@ static void board_clock_init(void)
 	set = 0xfffff0;
 	clrsetbits_le32(&clk4->div_lcd0, clr, set);
 
+	/* Wait for divider ready status */
+	while (readl(&clk4->div_stat_lcd0) & 0x1)
+		continue;
+
 	return;
 }
 
@@ -401,31 +405,25 @@ static void board_gpio_init(void)
 	gpio_set_pull(EXYNOS4X12_GPIO_K12, S5P_GPIO_PULL_NONE);
 	gpio_set_drv(EXYNOS4X12_GPIO_K12, S5P_GPIO_DRV_4X);
 
-	/* Enable FAN (Odroid U3) */
-	gpio_request(EXYNOS4X12_GPIO_D00, "FAN Control");
-
-	gpio_set_pull(EXYNOS4X12_GPIO_D00, S5P_GPIO_PULL_UP);
-	gpio_set_drv(EXYNOS4X12_GPIO_D00, S5P_GPIO_DRV_4X);
-	gpio_direction_output(EXYNOS4X12_GPIO_D00, 1);
-
-	/* OTG Vbus output (Odroid U3+) */
-	gpio_request(EXYNOS4X12_GPIO_L20, "OTG Vbus");
-
-	gpio_set_pull(EXYNOS4X12_GPIO_L20, S5P_GPIO_PULL_NONE);
-	gpio_set_drv(EXYNOS4X12_GPIO_L20, S5P_GPIO_DRV_4X);
-	gpio_direction_output(EXYNOS4X12_GPIO_L20, 0);
-
-	/* OTG INT (Odroid U3+) */
-	gpio_request(EXYNOS4X12_GPIO_X31, "OTG INT");
-
-	gpio_set_pull(EXYNOS4X12_GPIO_X31, S5P_GPIO_PULL_UP);
-	gpio_set_drv(EXYNOS4X12_GPIO_X31, S5P_GPIO_DRV_4X);
-	gpio_direction_input(EXYNOS4X12_GPIO_X31);
-
-	/* Blue LED (Odroid X2/U2/U3) */
-	gpio_request(EXYNOS4X12_GPIO_C10, "Blue LED");
-
-	gpio_direction_output(EXYNOS4X12_GPIO_C10, 0);
+//
+//	/* OTG Vbus output (Odroid U3+) */
+//	gpio_request(EXYNOS4X12_GPIO_L20, "OTG Vbus");
+//
+//	gpio_set_pull(EXYNOS4X12_GPIO_L20, S5P_GPIO_PULL_NONE);
+//	gpio_set_drv(EXYNOS4X12_GPIO_L20, S5P_GPIO_DRV_4X);
+//	gpio_direction_output(EXYNOS4X12_GPIO_L20, 0);
+//
+//	/* OTG INT (Odroid U3+) */
+//	gpio_request(EXYNOS4X12_GPIO_X31, "OTG INT");
+//
+//	gpio_set_pull(EXYNOS4X12_GPIO_X31, S5P_GPIO_PULL_UP);
+//	gpio_set_drv(EXYNOS4X12_GPIO_X31, S5P_GPIO_DRV_4X);
+//	gpio_direction_input(EXYNOS4X12_GPIO_X31);
+//
+//	/* Blue LED (Odroid X2/U2/U3) */
+//	gpio_request(EXYNOS4X12_GPIO_C10, "Blue LED");
+//
+//	gpio_direction_output(EXYNOS4X12_GPIO_C10, 0);
 
 #ifdef CONFIG_CMD_USB
 	/* USB3503A Reference frequency */
@@ -460,6 +458,7 @@ int exynos_power_init(void)
 		"VDDQ_EMMC_2.8V",
 		"TFLASH_2.8V",
 		"VDDQ_MMC2_2.8V",
+		"AUDIO.3V",
 		NULL,
 	};
 
@@ -467,6 +466,27 @@ int exynos_power_init(void)
 		error("Unable to init all mmc regulators");
 
 	odroid_low_power();
+
+	/* Enable BUZZER */
+	gpio_request(EXYNOS4X12_GPIO_D00, "Buzzer");
+
+	gpio_cfg_pin(EXYNOS4X12_GPIO_D00, S5P_GPIO_FUNC(0x1));
+	gpio_set_pull(EXYNOS4X12_GPIO_D00, S5P_GPIO_PULL_NONE);
+	gpio_set_drv(EXYNOS4X12_GPIO_D00, S5P_GPIO_DRV_4X);
+
+	//Make buzzer sound
+	int i = 0;
+	while(i < 100)
+	{
+		//gpio_direction_output(EXYNOS4X12_GPIO_D00, 0);
+		writel(0x0, 0x114000a4);
+        udelay(49);
+    	//gpio_direction_output(EXYNOS4X12_GPIO_D00, 1);
+    	writel(0x1, 0x114000a4);
+		udelay(49);
+	    ++i;
+	}
+	gpio_direction_output(EXYNOS4X12_GPIO_D00, 0);
 
 	return 0;
 }
