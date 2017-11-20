@@ -61,9 +61,11 @@
 				};
 
 				ldo4_reg: LDO4 {
-					regulator-name = "VDDQ_MMC2_2.8V";
+					regulator-name = "LCD_VCI";
 					regulator-min-microvolt = <800000>;
 					regulator-max-microvolt = <800000>;
+					regulator-always-on;
+					regulator-boot-on;
 				};
 
 				ldo5_reg: LDO5 {
@@ -88,6 +90,14 @@
 					regulator-name = "VDD_MIPI/HDMI_1.0V";
 					regulator-min-microvolt = <1000000>;
 					regulator-max-microvolt = <1000000>;
+				};
+
+				ldo9_reg: LDO9 {
+					regulator-name = "SENS.1V8";
+					regulator-min-microvolt = <1850000>;
+					regulator-max-microvolt = <1850000>;
+					regulator-always-on;
+					regulator-boot-on;
 				};
 
 				ldo10_reg: LDO10 {

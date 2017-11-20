@@ -455,10 +455,11 @@ int exynos_power_init(void)
 {
 	const char *mmc_regulators[] = {
 		"VDDQ_EMMC_1.8V",
+		"LCD_VCI",
 		"VDDQ_EMMC_2.8V",
 		"TFLASH_2.8V",
-		"VDDQ_MMC2_2.8V",
 		"AUDIO.3V",
+		"SENS.1V8",
 		NULL,
 	};
 
