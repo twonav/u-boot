@@ -81,14 +81,16 @@ void set_board_info(void)
 #endif
 #ifdef CONFIG_OF_LIBFDT
 	const char *bdtype = "";
-	const char *bdname = CONFIG_SYS_BOARD;
+	const char *bdname = "twonav";
 
 #ifdef CONFIG_BOARD_TYPES
 	bdtype = get_board_type();
 	if (!bdtype)
 		bdtype = "";
 
-	sprintf(info, "%s%s", bdname, bdtype);
+	setenv("device_model", bdtype);
+
+	sprintf(info, "%s_%s", bdname, bdtype);
 	setenv("boardname", info);
 #endif
 	snprintf(info, ARRAY_SIZE(info),  "%s%x-%s%s.dtb",

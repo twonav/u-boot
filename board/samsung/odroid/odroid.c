@@ -28,36 +28,116 @@ DECLARE_GLOBAL_DATA_PTR;
 #ifdef CONFIG_BOARD_TYPES
 /* Odroid board types */
 enum {
-	ODROID_TYPE_U3,
-	ODROID_TYPE_X2,
-	ODROID_TYPES,
+	TWONAV_TYPE_VELO,
+	TWONAV_TYPE_HORIZON,
+	TWONAV_TYPE_AVENTURA,
+	TWONAV_TYPE_TRAIL,
+	TWONAV_TYPE_UNKNOWN,
+	TWONAV_TYPES,
 };
+
+static bool HasSPI()
+{
+	//Setting pull-downs
+	gpio_request(EXYNOS4X12_GPIO_B4, "SPI_1_CLK");
+	gpio_set_pull(EXYNOS4X12_GPIO_B4, S5P_GPIO_PULL_DOWN);
+	int spi1_clk = gpio_get_value(EXYNOS4X12_GPIO_B4);
+	gpio_free(EXYNOS4X12_GPIO_B4);
+	printk("SPI_1_CLK value: %d\n", spi1_clk);
+
+	gpio_request(EXYNOS4X12_GPIO_B5, "SPI_1_nSS");
+	gpio_set_pull(EXYNOS4X12_GPIO_B5, S5P_GPIO_PULL_DOWN);
+	int spi1_nss = gpio_get_value(EXYNOS4X12_GPIO_B5);
+	gpio_free(EXYNOS4X12_GPIO_B5);
+	printk("SPI_1_nSS value: %d\n", spi1_nss);
+
+	gpio_request(EXYNOS4X12_GPIO_B6, "SPI_1_MISO");
+	gpio_set_pull(EXYNOS4X12_GPIO_B6, S5P_GPIO_PULL_DOWN);
+	int spi1_miso = gpio_get_value(EXYNOS4X12_GPIO_B6);
+	gpio_free(EXYNOS4X12_GPIO_B6);
+	printk("SPI_1_MISO value: %d\n", spi1_miso);
+
+	gpio_request(EXYNOS4X12_GPIO_B7, "SPI_1_MOSI");
+	gpio_set_pull(EXYNOS4X12_GPIO_B7, S5P_GPIO_PULL_DOWN);
+	int spi1_mosi = gpio_get_value(EXYNOS4X12_GPIO_B7);
+	gpio_free(EXYNOS4X12_GPIO_B7);
+	printk("SPI_1_MOSI value: %d\n", spi1_mosi);
+
+	return (spi1_clk+spi1_nss+spi1_miso+spi1_mosi);
+}
+
+static bool HasSDCard()
+{
+	//Setting pull-downs
+	gpio_request(EXYNOS4X12_GPIO_K23, "eMMC_DATA0");
+	gpio_set_pull(EXYNOS4X12_GPIO_K23, S5P_GPIO_PULL_DOWN);
+	int sd2_data0 = gpio_get_value(EXYNOS4X12_GPIO_K23);
+	gpio_free(EXYNOS4X12_GPIO_K23);
+	printk("SD2_DATA0 value: %d\n", sd2_data0);
+
+	gpio_request(EXYNOS4X12_GPIO_K24, "eMMC_DATA1");
+	gpio_set_pull(EXYNOS4X12_GPIO_K24, S5P_GPIO_PULL_DOWN);
+	int sd2_data1 = gpio_get_value(EXYNOS4X12_GPIO_K24);
+	gpio_free(EXYNOS4X12_GPIO_K24);
+	printk("SD2_DATA1 value: %d\n", sd2_data1);
+
+	gpio_request(EXYNOS4X12_GPIO_K25, "eMMC_DATA2");
+	gpio_set_pull(EXYNOS4X12_GPIO_K25, S5P_GPIO_PULL_DOWN);
+	int sd2_data2 = gpio_get_value(EXYNOS4X12_GPIO_K25);
+	gpio_free(EXYNOS4X12_GPIO_K25);
+	printk("SD2_DATA2 value: %d\n", sd2_data2);
+
+	gpio_request(EXYNOS4X12_GPIO_K26, "eMMC_DATA3");
+	gpio_set_pull(EXYNOS4X12_GPIO_K26, S5P_GPIO_PULL_DOWN);
+	int sd2_data3 = gpio_get_value(EXYNOS4X12_GPIO_K26);
+	gpio_free(EXYNOS4X12_GPIO_K26);
+	printk("SD2_DATA3 value: %d\n", sd2_data3);
+
+	return (sd2_data0+sd2_data1+sd2_data2+sd2_data3);
+}
+
+static void exynos_detect_hardware()
+{
+	if(HasSPI())
+	{
+		//SPI present. Device is Horizon/Velo
+		printf("SPI present. Device is Horizon/Velo\n");
+		if(HasSDCard())
+		{
+			printf("SDCard present. Device is Horizon\n");
+			gd->board_type = TWONAV_TYPE_HORIZON;
+		}
+		else
+		{
+			printf("SDCard NOT present. Device is Velo\n");
+			gd->board_type = TWONAV_TYPE_VELO;
+		}
+	}
+	else
+	{
+		//SPI not present. Device is Aventura/Trail
+		printf("SPI NOT present. Device is Aventura/Trail\n");
+		if(HasSDCard())
+		{
+			printf("SDCard present. Device is Aventura\n");
+			gd->board_type = TWONAV_TYPE_AVENTURA;
+		}
+		else
+		{
+			printf("SDCard NOT present. Device is Trail\n");
+			gd->board_type = TWONAV_TYPE_TRAIL;
+		}
+	}
+}
 
 void set_board_type(void)
 {
-	/* Set GPA1 pin 1 to HI - enable XCL205 output */
-	writel(XCL205_EN_GPIO_CON_CFG, XCL205_EN_GPIO_CON);
-	writel(XCL205_EN_GPIO_DAT_CFG, XCL205_EN_GPIO_CON + 0x4);
-	writel(XCL205_EN_GPIO_PUD_CFG, XCL205_EN_GPIO_CON + 0x8);
-	writel(XCL205_EN_GPIO_DRV_CFG, XCL205_EN_GPIO_CON + 0xc);
-
-	/* Set GPC1 pin 2 to IN - check XCL205 output state */
-	writel(XCL205_STATE_GPIO_CON_CFG, XCL205_STATE_GPIO_CON);
-	writel(XCL205_STATE_GPIO_PUD_CFG, XCL205_STATE_GPIO_CON + 0x8);
-
-	/* XCL205 - needs some latch time */
-	sdelay(200000);
-
-	/* Check GPC1 pin2 - LED supplied by XCL205 - X2 only */
-	if (readl(XCL205_STATE_GPIO_DAT) & (1 << XCL205_STATE_GPIO_PIN))
-		gd->board_type = ODROID_TYPE_X2;
-	else
-		gd->board_type = ODROID_TYPE_U3;
+	gd->board_type = TWONAV_TYPE_UNKNOWN;
 }
 
 const char *get_board_type(void)
 {
-	const char *board_type[] = {"u3", "x2"};
+	const char *board_type[] = {"velo", "horizon", "aventura", "trail", "unknown"};
 
 	return board_type[gd->board_type];
 }
@@ -489,6 +569,8 @@ int exynos_power_init(void)
 	}
 	gpio_direction_output(EXYNOS4X12_GPIO_D00, 0);
 
+	exynos_detect_hardware();
+
 	return 0;
 }
 
@@ -529,10 +611,7 @@ int board_usb_init(int index, enum usb_init_type init)
 
 	/* Set Ref freq 0 => 24MHz, 1 => 26MHz*/
 	/* Odroid Us have it at 24MHz, Odroid Xs at 26MHz */
-	if (gd->board_type == ODROID_TYPE_U3)
-		gpio_direction_output(EXYNOS4X12_GPIO_X30, 0);
-	else
-		gpio_direction_output(EXYNOS4X12_GPIO_X30, 1);
+	gpio_direction_output(EXYNOS4X12_GPIO_X30, 0);
 
 	/* Disconnect, Reset, Connect */
 	gpio_direction_output(EXYNOS4X12_GPIO_X34, 0);
