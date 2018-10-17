@@ -115,14 +115,7 @@ uint8_t i2c_reg_read(uint8_t chip_addr, uint8_t offset)
 	ret = i2c_compat_get_device(chip_addr, 1, &dev);
 	if (ret)
 		return 0xff;
-	ret = dm_i2c_reg_read(dev, offset);
-
-	if(ret < 0)
-	{
-		debug("dm_i2c_reg_read: ERROR=%d\n", ret);
-		return 0;
-	}
-	return ret;
+	return dm_i2c_reg_read(dev, offset);
 }
 
 void i2c_reg_write(uint8_t chip_addr, uint8_t offset, uint8_t val)
